@@ -24,7 +24,7 @@ function FeedbackForm({ handleAddFeedback }) {
 	}
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		if (text.trim().length < 10) return
+		if (text.trim().length < 10 || rating == null) return
 		const feedback = { rating, text }
 		handleAddFeedback(feedback)
 		setText("")
