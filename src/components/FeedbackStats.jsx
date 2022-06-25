@@ -1,4 +1,9 @@
-function FeedbackStats({ feedbacks }) {
+import { useContext } from "react"
+import FeedbackContext from "../context/FeedbackContext"
+
+function FeedbackStats() {
+	const { feedbacks } = useContext(FeedbackContext)
+
 	const sumOfRatings = feedbacks.reduce((accu, { rating }) => accu + rating, 0)
 	const averageOfRatings = (sumOfRatings / feedbacks.length)
 		.toFixed(1)
