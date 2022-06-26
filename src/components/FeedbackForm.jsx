@@ -43,6 +43,7 @@ function FeedbackForm() {
 			addFeedback(feedback)
 		}
 		setText("")
+		setRating(null)
 	}
 
 	return (
