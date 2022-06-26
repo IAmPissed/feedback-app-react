@@ -1,31 +1,30 @@
-import { createContext, useState } from 'react'
-import { v4 as uuidv4 } from "uuid"
+import { createContext, useEffect, useState } from 'react'
 
 const FeedbackContext = createContext()
 
 
 export const FeedbackProvider = ({ children }) => {
-    const [feedbacks, setFeedbacks] = useState([
-        {
-            id: 1,
-            text: 'This is a feedback item 1',
-            rating: 10
-        },
-        {
-            id: 2,
-            text: 'This is a feedback item 2',
-            rating: 9
-        },
-        {
-            id: 3,
-            text: 'This is a feedback item 3',
-            rating: 7
-        }
-    ])
+    const [feedbacks, setFeedbacks] = useState([])
     const [feedbackToEdit, setFeedbackToEdit] = useState({
         item: {},
         editMode: false
     })
+
+    useEffect(() => {
+        fetchFeedbacks().then((data) => {
+            setFeedbacks(data)
+        })
+    }, [])
+
+    const fetchFeedbacks = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}?_sort=id&_order=desc`)
+            const data = await response.json()
+            return data
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const deleteFeedback = (id) => {
         const deleteQuestion = "Are you sure you want to delete this feedback?"
@@ -33,7 +32,6 @@ export const FeedbackProvider = ({ children }) => {
         setFeedbacks(feedbacks.filter((feedback) => feedback.id !== id))
     }
     const addFeedback = (feedback) => {
-        feedback.id = uuidv4()
         setFeedbacks(() => {
             return [feedback, ...feedbacks]
         })
