@@ -28,23 +28,40 @@ export const FeedbackProvider = ({ children }) => {
         }
     }
 
-    const deleteFeedback = (id) => {
+    const deleteFeedback = async (id) => {
         const deleteQuestion = "Are you sure you want to delete this feedback?"
         if (!window.confirm(deleteQuestion)) return
+        await fetch(`${process.env.REACT_APP_API_URL}/${id}`, { method: 'DELETE' })
         setFeedbacks(feedbacks.filter((feedback) => feedback.id !== id))
     }
-    const addFeedback = (feedback) => {
+    const addFeedback = async (feedback) => {
+        const response = await fetch(process.env.REACT_APP_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(feedback)
+        })
+        const data = await response.json()
         setFeedbacks(() => {
-            return [feedback, ...feedbacks]
+            return [data, ...feedbacks]
         })
     }
     const editFeedback = (item) => {
         setFeedbackToEdit(() => ({ item, editMode: true }))
     }
-    const updateFeedback = (id, updatedFeedback) => {
+    const updateFeedback = async (id, updatedFeedback) => {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedFeedback)
+        })
+        const data = await response.json()
         setFeedbacks((previousFeedbacks) => (
             previousFeedbacks.map(feedback => {
-                return feedback.id === id ? { ...feedback, ...updatedFeedback } : feedback
+                return feedback.id === id ? { ...feedback, ...data } : feedback
             })
         ))
         setFeedbackToEdit(() => ({ item: {}, editMode: false }))
